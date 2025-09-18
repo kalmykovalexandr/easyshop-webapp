@@ -1,0 +1,26 @@
+# Node / Vite / Nginx
+node_modules/
+dist/
+.cache/
+.vite/
+.nuxt/
+
+# Logs
+logs/
+*.log
+*.log.*
+*.out
+*.err
+
+# Env files
+.env
+.env.*
+
+# Editors / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
