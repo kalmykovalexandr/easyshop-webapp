@@ -1,10 +1,13 @@
-﻿import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useAuth } from 'react-oidc-context'
 import { useTranslation } from 'react-i18next'
 
 import LoadingScreen from '../../../shared/components/LoadingScreen'
+import Notice from '../../../shared/components/Notice'
 import { useProducts } from '../hooks/useProducts'
 import { useCheckout } from '../../purchases/hooks/useCheckout'
+
+import styles from './Shop.module.css'
 
 const currencyFormatter = new Intl.NumberFormat('ru-RU', {
   style: 'currency',
@@ -14,24 +17,42 @@ const currencyFormatter = new Intl.NumberFormat('ru-RU', {
 export default function ShopPage() {
   const { t } = useTranslation()
   const auth = useAuth()
-  const { data, isLoading, isError, error } = useProducts()
+  const { data, isLoading, isError, error, refetch } = useProducts()
   const checkout = useCheckout()
+  const [feedback, setFeedback] = useState(null)
+
+  useEffect(() => {
+    if (!feedback) {
+      return
+    }
+    const timeoutId = window.setTimeout(() => setFeedback(null), 4000)
+    return () => window.clearTimeout(timeoutId)
+  }, [feedback])
 
   const products = useMemo(() => data ?? [], [data])
 
+  const ensureAuthenticated = () => {
+    if (auth.isAuthenticated) {
+      return true
+    }
+
+    const targetPath = `${window.location.pathname}${window.location.search}${window.location.hash}`
+    window.sessionStorage.setItem('easyshop:returnUrl', targetPath)
+    auth.signinRedirect({ state: { returnUrl: targetPath } })
+    return false
+  }
+
   const handleCheckout = (product) => {
-    if (!auth.isAuthenticated) {
-      window.sessionStorage.setItem('easyshop:returnUrl', window.location.pathname)
-      auth.signinRedirect({ state: { returnUrl: window.location.pathname } })
+    if (!ensureAuthenticated()) {
       return
     }
 
     checkout.mutate([{ productId: product.id, quantity: 1 }], {
       onSuccess: () => {
-        alert(t('shop.order_done'))
+        setFeedback({ type: 'success', message: t('shop.order_done') })
       },
       onError: (mutationError) => {
-        alert(mutationError.message)
+        setFeedback({ type: 'error', message: mutationError.message })
       }
     })
   }
@@ -42,44 +63,63 @@ export default function ShopPage() {
 
   if (isError) {
     return (
-      <div style={{ padding: 24 }}>
-        <h1>{t('shop.catalog')}</h1>
-        <p style={{ color: 'red' }}>{error.message}</p>
-        <button onClick={() => window.location.reload()}>{t('shop.retry')}</button>
-      </div>
+      <section className={styles.section}>
+        <header className={styles.header}>
+          <h1>{t('shop.catalog')}</h1>
+          <p className={styles.subtitle}>{t('shop.description')}</p>
+        </header>
+        <Notice variant="error">
+          <div className={styles.errorContent}>
+            <p>{error.message}</p>
+            <button type="button" className={styles.retryButton} onClick={() => refetch()}>
+              {t('shop.retry')}
+            </button>
+          </div>
+        </Notice>
+      </section>
     )
   }
 
   return (
-    <section style={{ display: 'grid', gap: 24 }}>
-      <header>
+    <section className={styles.section}>
+      <header className={styles.header}>
         <h1>{t('shop.catalog')}</h1>
-        <p style={{ color: '#555' }}>{t('shop.description')}</p>
+        <p className={styles.subtitle}>{t('shop.description')}</p>
       </header>
 
+      {feedback && (
+        <Notice variant={feedback.type}>
+          {feedback.message}
+        </Notice>
+      )}
+
       {products.length === 0 ? (
-        <div style={{ padding: 24, border: '1px dashed #ccc', borderRadius: 12, textAlign: 'center' }}>
+        <div className={styles.emptyState}>
           {t('shop.no_products')}
         </div>
       ) : (
-        <div style={{ display: 'grid', gap: 16, gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))' }}>
+        <div className={styles.grid}>
           {products.map((product) => (
-            <article key={product.id} style={{ border: '1px solid #eee', borderRadius: 16, padding: 16, display: 'grid', gap: 12 }}>
+            <article key={product.id} className={styles.card}>
               <div>
-                <h2 style={{ margin: 0, fontSize: '1.1rem' }}>{product.name}</h2>
-                <p style={{ margin: 0, color: '#666' }}>{product.description ?? t('shop.no_description')}</p>
+                <h2 className={styles.cardTitle}>{product.name}</h2>
+                <p className={styles.cardDescription}>
+                  {product.description ?? t('shop.no_description')}
+                </p>
               </div>
-              <dl style={{ margin: 0, display: 'grid', gap: 4, color: '#555' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <dl className={styles.cardDetails}>
+                <div className={styles.cardDetailRow}>
                   <dt>{t('shop.price')}</dt>
-                  <dd style={{ margin: 0 }}>{currencyFormatter.format(Number(product.price ?? 0))}</dd>
+                  <dd>{currencyFormatter.format(Number(product.price ?? 0))}</dd>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div className={styles.cardDetailRow}>
                   <dt>{t('shop.stock')}</dt>
-                  <dd style={{ margin: 0 }}>{product.stock}</dd>
+                  <dd>{product.stock}</dd>
                 </div>
               </dl>
               <button
+                type="button"
+                className={styles.buyButton}
                 disabled={checkout.isPending}
                 onClick={() => handleCheckout(product)}
               >

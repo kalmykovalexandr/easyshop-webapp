@@ -1,7 +1,9 @@
-﻿import { useAuth } from 'react-oidc-context'
+import { useAuth } from 'react-oidc-context'
 import { useTranslation } from 'react-i18next'
 
 import RequireAuth from '../../auth/components/RequireAuth'
+
+import styles from './Admin.module.css'
 
 function extractRole(user) {
   const profile = user?.profile ?? {}
@@ -14,10 +16,10 @@ function AdminContent() {
   const role = extractRole(auth.user)
 
   return (
-    <section>
-      <h1>{t('admin.title')}</h1>
-      <p>{t('admin.description')}</p>
-      <p style={{ color: '#555' }}>{t('admin.yourRole')}: {role}</p>
+    <section className={styles.section}>
+      <h1 className={styles.title}>{t('admin.title')}</h1>
+      <p className={styles.description}>{t('admin.description')}</p>
+      <p className={styles.roleLabel}>{t('admin.yourRole')}: {role}</p>
     </section>
   )
 }

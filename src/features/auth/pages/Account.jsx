@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next'
 
 import { changeLanguage } from '../../../shared/i18n'
 
+import styles from './Account.module.css'
+
 function getUserInfo(user) {
   if (!user) return null
   const profile = user.profile ?? {}
@@ -32,37 +34,43 @@ export default function AccountPage() {
   }
 
   return (
-    <section>
-      <header style={{ marginBottom: 24 }}>
-        <h1>{t('account.title')}</h1>
-        <label style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+    <section className={styles.section}>
+      <header className={styles.header}>
+        <h1 className={styles.title}>{t('account.title')}</h1>
+        <label className={styles.languageSelector}>
           <span>{t('account.language')}</span>
-          <select value={i18n.language} onChange={handleLanguageChange}>
-            <option value="ru">Русский</option>
+          <select value={i18n.language} onChange={handleLanguageChange} className={styles.select}>
+            <option value="ru">Russian</option>
             <option value="en">English</option>
           </select>
         </label>
       </header>
 
-      {auth.isLoading && <p>{t('account.loading')}</p>}
+      {auth.isLoading && <p className={styles.message}>{t('account.loading')}</p>}
 
       {!auth.isAuthenticated && !auth.isLoading && (
-        <div>
-          <p>{t('account.notAuthorized')}</p>
-          <button onClick={handleLogin}>{t('account.login')}</button>
+        <div className={styles.card}>
+          <p className={styles.message}>{t('account.notAuthorized')}</p>
+          <button type="button" className={styles.primaryButton} onClick={handleLogin}>
+            {t('account.login')}
+          </button>
         </div>
       )}
 
       {auth.isAuthenticated && userInfo && (
-        <div style={{ display: 'grid', gap: 12 }}>
-          <div>
-            <strong>{t('account.email')}:</strong> {userInfo.email}
+        <div className={styles.card}>
+          <div className={styles.row}>
+            <strong>{t('account.email')}:</strong>
+            <span>{userInfo.email}</span>
           </div>
-          <div>
-            <strong>{t('account.role')}:</strong> {userInfo.role}
+          <div className={styles.row}>
+            <strong>{t('account.role')}:</strong>
+            <span>{userInfo.role}</span>
           </div>
-          <div style={{ display: 'flex', gap: 8 }}>
-            <button onClick={handleLogout}>{t('account.logout')}</button>
+          <div className={styles.actions}>
+            <button type="button" className={styles.secondaryButton} onClick={handleLogout}>
+              {t('account.logout')}
+            </button>
           </div>
         </div>
       )}

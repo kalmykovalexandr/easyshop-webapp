@@ -1,4 +1,4 @@
-﻿{
+{
   "nav": {
     "shop": "Shop",
     "account": "Account",
@@ -39,6 +39,8 @@
     "backToShop": "Back to shop"
   },
   "auth": {
-    "redirecting": "Redirecting to sign-in page"
+    "redirecting": "Redirecting to sign-in page",
+    "processing": "Completing sign-in...",
+    "error": "Authentication error"
   }
 }

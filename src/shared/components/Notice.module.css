@@ -1,0 +1,30 @@
+.notice {
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  font-size: 0.95rem;
+}
+
+.info {
+  background: #f0f4ff;
+  border-color: #c7d2fe;
+  color: #1e3a8a;
+}
+
+.success {
+  background: #ecfdf5;
+  border-color: #6ee7b7;
+  color: #047857;
+}
+
+.error {
+  background: #fef2f2;
+  border-color: #fecdd3;
+  color: #b91c1c;
+}
+
+.warning {
+  background: #fefce8;
+  border-color: #fde68a;
+  color: #92400e;
+}

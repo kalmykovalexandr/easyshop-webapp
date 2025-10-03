@@ -1,11 +1,16 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from 'react-oidc-context'
+import { useTranslation } from 'react-i18next'
+
 import LoadingScreen from '../../../shared/components/LoadingScreen'
+
+import styles from './AuthCallback.module.css'
 
 export default function AuthCallback() {
   const auth = useAuth()
   const navigate = useNavigate()
+  const { t } = useTranslation()
 
   useEffect(() => {
     if (auth.isAuthenticated) {
@@ -15,8 +20,12 @@ export default function AuthCallback() {
   }, [auth.isAuthenticated, auth.user, navigate])
 
   if (auth.error) {
-    return <div style={{ padding: 24 }}>?????? ??????????????: {auth.error.message}</div>
+    return (
+      <div className={styles.error}>
+        {t('auth.error')}: {auth.error.message}
+      </div>
+    )
   }
 
-  return <LoadingScreen message="????????? ????..." />
+  return <LoadingScreen message={t('auth.processing')} />
 }

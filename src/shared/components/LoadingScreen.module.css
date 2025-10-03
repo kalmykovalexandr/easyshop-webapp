@@ -1,0 +1,10 @@
+.wrapper {
+  display: grid;
+  place-items: center;
+  min-height: 50vh;
+  color: #555;
+}
+
+.text {
+  margin: 0;
+}

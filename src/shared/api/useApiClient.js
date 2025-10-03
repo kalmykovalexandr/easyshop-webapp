@@ -2,6 +2,8 @@ import { useAuth } from 'react-oidc-context'
 
 const API_BASE = (import.meta.env.VITE_API_BASE_URL ?? '').replace(/\/$/, '')
 
+let authRedirectInFlight = false
+
 function buildUrl(path) {
   if (!path) {
     return API_BASE || ''
@@ -28,11 +30,25 @@ async function parseResponse(response) {
   }
 }
 
+function startAuthRedirect(signinRedirect) {
+  if (authRedirectInFlight) {
+    return
+  }
+
+  authRedirectInFlight = true
+  const targetPath = `${window.location.pathname}${window.location.search}${window.location.hash}`
+  window.sessionStorage.setItem('easyshop:returnUrl', targetPath)
+
+  signinRedirect({ state: { returnUrl: targetPath } }).finally(() => {
+    authRedirectInFlight = false
+  })
+}
+
 export function useApiClient() {
   const auth = useAuth()
 
   return async function request(path, options = {}) {
-    const { body, headers = {}, method = 'GET', ...rest } = options
+    const { body, headers = {}, method = 'GET', signal, ...rest } = options
     const token = auth.user?.access_token
 
     const requestHeaders = {
@@ -52,11 +68,12 @@ export function useApiClient() {
       method,
       headers: requestHeaders,
       body: body ? (typeof body === 'string' ? body : JSON.stringify(body)) : undefined,
+      signal,
       ...rest
     })
 
     if (response.status === 401) {
-      auth.signinRedirect({ state: { returnUrl: window.location.pathname } })
+      startAuthRedirect(auth.signinRedirect)
       throw new Error('????????? ???????????')
     }
 
@@ -66,7 +83,7 @@ export function useApiClient() {
 
     if (!response.ok) {
       const errorBody = await parseResponse(response)
-      const message = errorBody?.message ?? response.statusText
+      const message = typeof errorBody === 'string' ? errorBody : errorBody?.message ?? response.statusText
       throw new Error(message)
     }
 

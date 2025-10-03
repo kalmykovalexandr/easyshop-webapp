@@ -1,4 +1,5 @@
-﻿import { Navigate, useLocation } from 'react-router-dom'
+import { useEffect, useRef } from 'react'
+import { Navigate, useLocation } from 'react-router-dom'
 import { useAuth } from 'react-oidc-context'
 import { useTranslation } from 'react-i18next'
 
@@ -14,14 +15,28 @@ export default function RequireAuth({ children, role }) {
   const auth = useAuth()
   const location = useLocation()
   const { t } = useTranslation()
+  const redirectingRef = useRef(false)
+  const { isAuthenticated, isLoading, signinRedirect } = auth
 
-  if (auth.isLoading) {
+  useEffect(() => {
+    if (isLoading || isAuthenticated || redirectingRef.current) {
+      return
+    }
+
+    const targetPath = `${location.pathname}${location.search}${location.hash}`
+    redirectingRef.current = true
+    window.sessionStorage.setItem('easyshop:returnUrl', targetPath)
+
+    signinRedirect({ state: { returnUrl: targetPath } }).catch(() => {
+      redirectingRef.current = false
+    })
+  }, [isAuthenticated, isLoading, location, signinRedirect])
+
+  if (isLoading) {
     return <LoadingScreen />
   }
 
-  if (!auth.isAuthenticated) {
-    window.sessionStorage.setItem('easyshop:returnUrl', location.pathname)
-    auth.signinRedirect({ state: { returnUrl: location.pathname } })
+  if (!isAuthenticated) {
     return <LoadingScreen message={t('auth.redirecting', 'Redirecting to sign-in page')} />
   }
 

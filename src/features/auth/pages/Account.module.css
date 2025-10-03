@@ -1,0 +1,81 @@
+.section {
+  display: grid;
+  gap: 24px;
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.title {
+  margin: 0;
+}
+
+.languageSelector {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+}
+
+.select {
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+}
+
+.card {
+  display: grid;
+  gap: 12px;
+  padding: 20px;
+  border-radius: 16px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+}
+
+.row {
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+}
+
+.row strong {
+  color: #374151;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.primaryButton,
+.secondaryButton {
+  border-radius: 12px;
+  border: none;
+  padding: 10px 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.primaryButton {
+  background: #4338ca;
+  color: #fff;
+}
+
+.secondaryButton {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.secondaryButton:hover {
+  background: #e5e7eb;
+}
+
+.message {
+  margin: 0;
+  color: #4b5563;
+}
