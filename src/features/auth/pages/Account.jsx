@@ -1,4 +1,4 @@
-﻿import { useMemo } from 'react'
+import { useMemo } from 'react'
 import { useAuth } from 'react-oidc-context'
 import { useTranslation } from 'react-i18next'
 
@@ -21,12 +21,14 @@ export default function AccountPage() {
   const userInfo = useMemo(() => getUserInfo(auth.user), [auth.user])
 
   const handleLogin = () => {
-    auth.signinRedirect({ state: { returnUrl: window.location.pathname } })
+    if (!auth.isLoading) {
+      auth.signinRedirect({ state: { returnUrl: window.location.pathname } })
+    }
   }
 
   const handleLogout = () => {
     window.sessionStorage.removeItem('easyshop:returnUrl')
-    auth.signoutRedirect()
+    auth.signoutRedirect({ post_logout_redirect_uri: window.location.origin })
   }
 
   const handleLanguageChange = (event) => {
@@ -46,12 +48,15 @@ export default function AccountPage() {
         </label>
       </header>
 
-      {auth.isLoading && <p className={styles.message}>{t('account.loading')}</p>}
-
-      {!auth.isAuthenticated && !auth.isLoading && (
+      {!auth.isAuthenticated && (
         <div className={styles.card}>
           <p className={styles.message}>{t('account.notAuthorized')}</p>
-          <button type="button" className={styles.primaryButton} onClick={handleLogin}>
+          <button
+            type="button"
+            className={styles.primaryButton}
+            onClick={handleLogin}
+            disabled={auth.isLoading}
+          >
             {t('account.login')}
           </button>
         </div>
