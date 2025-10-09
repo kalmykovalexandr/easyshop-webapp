@@ -1,46 +1,67 @@
-{
-  "nav": {
-    "shop": "Shop",
-    "account": "Account",
-    "admin": "Admin"
-  },
-  "shop": {
-    "catalog": "Catalog",
-    "description": "Choose a product and buy it in one click",
-    "stock": "Stock",
-    "price": "Price",
-    "buy_one": "Buy",
-    "login_first": "Sign in first on the Account page",
-    "order_done": "Order placed",
-    "loading": "Loading products...",
-    "no_products": "No products available",
-    "no_description": "No description",
-    "retry": "Retry"
-  },
-  "account": {
-    "title": "Account",
-    "language": "Language",
-    "login": "Login",
-    "logout": "Logout",
-    "email": "Email",
-    "role": "Role",
-    "loading": "Checking authentication...",
-    "notAuthorized": "Sign in to access your purchases",
-    "login_success": "Logged in"
-  },
-  "admin": {
-    "title": "Admin panel",
-    "description": "Here you will be able to manage products and orders.",
-    "yourRole": "Your role"
-  },
-  "success": {
-    "title": "Thank you for your purchase!",
-    "message": "We have sent the confirmation to your email.",
-    "backToShop": "Back to shop"
-  },
-  "auth": {
-    "redirecting": "Redirecting to sign-in page",
-    "processing": "Completing sign-in...",
-    "error": "Authentication error"
-  }
+﻿{
+    "nav":  {
+                "shop":  "Shop",
+                "account":  "Account",
+                "admin":  "Admin"
+            },
+    "menu":  {
+                 "profile":  "My profile",
+                 "orders":  "My orders",
+                 "admin":  "Management",
+                 "logout":  "Sign out",
+                 "signIn":  "Sign in",
+                 "signInGoogle":  "Sign in with Google",
+                 "buttonSignedIn":  "Open account menu",
+                 "buttonSignedOut":  "Open sign-in menu",
+                 "language":  "Change language",
+                 "languageAria":  "Switch interface language to {{language}}"
+             },
+    "shop":  {
+                 "catalog":  "Catalog",
+                 "description":  "Choose a product and buy it in one click",
+                 "stock":  "Stock",
+                 "price":  "Price",
+                 "buy_one":  "Buy",
+                 "login_first":  "Sign in first on the Account page",
+                 "order_done":  "Order placed",
+                 "loading":  "Loading products...",
+                 "no_products":  "No products available",
+                 "no_description":  "No description",
+                 "retry":  "Retry"
+             },
+    "account":  {
+                    "title":  "Account",
+                    "language":  "Language",
+                    "login":  "Login",
+                    "logout":  "Logout",
+                    "email":  "Email",
+                    "role":  "Role",
+                    "loading":  "Checking authentication...",
+                    "notAuthorized":  "Sign in to access your purchases",
+                    "login_success":  "Logged in"
+                },
+    "orders":  {
+                   "title":  "My orders",
+                   "subtitle":  "Track your recent purchases",
+                   "empty":  "You have no orders yet."
+               },
+    "admin":  {
+                  "title":  "Admin panel",
+                  "description":  "Here you will be able to manage products and orders.",
+                  "yourRole":  "Your role"
+              },
+    "success":  {
+                    "title":  "Thank you for your purchase!",
+                    "message":  "We have sent the confirmation to your email.",
+                    "backToShop":  "Back to shop"
+                },
+    "auth":  {
+                 "redirecting":  "Redirecting to sign-in page",
+                 "processing":  "Completing sign-in...",
+                 "error":  "Authentication error"
+             },
+    "languages":  {
+                      "en":  "English",
+                      "ru":  "Русский"
+                  }
 }

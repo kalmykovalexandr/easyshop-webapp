@@ -15,19 +15,6 @@
   margin: 0;
 }
 
-.languageSelector {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.95rem;
-}
-
-.select {
-  padding: 6px 12px;
-  border-radius: 8px;
-  border: 1px solid #d1d5db;
-}
-
 .card {
   display: grid;
   gap: 12px;

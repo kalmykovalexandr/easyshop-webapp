@@ -9,7 +9,16 @@ const resources = {
   ru: { translation: ru }
 }
 
+function setLocaleCookie(lng) {
+  if (typeof document === 'undefined') {
+    return
+  }
+  const maxAge = 60 * 60 * 24 * 365
+  document.cookie = `easyshop-lang=${lng}; Max-Age=${maxAge}; Path=/; SameSite=Lax`
+}
+
 const language = localStorage.getItem('easyshop:lang') ?? 'ru'
+setLocaleCookie(language)
 
 i18n
   .use(initReactI18next)
@@ -25,6 +34,7 @@ i18n
 export function changeLanguage(lng) {
   i18n.changeLanguage(lng)
   localStorage.setItem('easyshop:lang', lng)
+  setLocaleCookie(lng)
 }
 
 export default i18n

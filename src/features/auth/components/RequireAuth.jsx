@@ -14,7 +14,7 @@ function extractRole(user) {
 export default function RequireAuth({ children, role }) {
   const auth = useAuth()
   const location = useLocation()
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const redirectingRef = useRef(false)
   const { isAuthenticated, isLoading, signinRedirect } = auth
 
@@ -24,13 +24,17 @@ export default function RequireAuth({ children, role }) {
     }
 
     const targetPath = `${location.pathname}${location.search}${location.hash}`
+    const normalizedLanguage = (i18n.language || 'en').split('-')[0]
     redirectingRef.current = true
     window.sessionStorage.setItem('easyshop:returnUrl', targetPath)
 
-    signinRedirect({ state: { returnUrl: targetPath } }).catch(() => {
+    signinRedirect({
+      state: { returnUrl: targetPath },
+      extraQueryParams: { lang: normalizedLanguage, ui_locales: normalizedLanguage }
+    }).catch(() => {
       redirectingRef.current = false
     })
-  }, [isAuthenticated, isLoading, location, signinRedirect])
+  }, [i18n.language, isAuthenticated, isLoading, location, signinRedirect])
 
   if (isLoading) {
     return <LoadingScreen />

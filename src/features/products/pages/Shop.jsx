@@ -15,11 +15,12 @@ const currencyFormatter = new Intl.NumberFormat('ru-RU', {
 })
 
 export default function ShopPage() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const auth = useAuth()
   const { data, isLoading, isError, error, refetch } = useProducts()
   const checkout = useCheckout()
   const [feedback, setFeedback] = useState(null)
+  const normalizedLanguage = useMemo(() => (i18n.language || 'en').split('-')[0], [i18n.language])
 
   useEffect(() => {
     if (!feedback) {
@@ -38,7 +39,10 @@ export default function ShopPage() {
 
     const targetPath = `${window.location.pathname}${window.location.search}${window.location.hash}`
     window.sessionStorage.setItem('easyshop:returnUrl', targetPath)
-    auth.signinRedirect({ state: { returnUrl: targetPath } })
+    auth.signinRedirect({
+      state: { returnUrl: targetPath },
+      extraQueryParams: { lang: normalizedLanguage, ui_locales: normalizedLanguage }
+    })
     return false
   }
 
@@ -132,3 +136,6 @@ export default function ShopPage() {
     </section>
   )
 }
+
+
+

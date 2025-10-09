@@ -2,8 +2,6 @@ import { useMemo } from 'react'
 import { useAuth } from 'react-oidc-context'
 import { useTranslation } from 'react-i18next'
 
-import { changeLanguage } from '../../../shared/i18n'
-
 import styles from './Account.module.css'
 
 function getUserInfo(user) {
@@ -21,9 +19,16 @@ export default function AccountPage() {
   const userInfo = useMemo(() => getUserInfo(auth.user), [auth.user])
 
   const handleLogin = () => {
-    if (!auth.isLoading) {
-      auth.signinRedirect({ state: { returnUrl: window.location.pathname } })
+    if (auth.isLoading) {
+      return
     }
+    const returnUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`
+    const normalizedLanguage = (i18n.language || 'en').split('-')[0]
+    window.sessionStorage.setItem('easyshop:returnUrl', returnUrl)
+    auth.signinRedirect({
+      state: { returnUrl },
+      extraQueryParams: { lang: normalizedLanguage, ui_locales: normalizedLanguage }
+    }).catch(() => {})
   }
 
   const handleLogout = () => {
@@ -31,21 +36,10 @@ export default function AccountPage() {
     auth.signoutRedirect({ post_logout_redirect_uri: window.location.origin })
   }
 
-  const handleLanguageChange = (event) => {
-    changeLanguage(event.target.value)
-  }
-
   return (
     <section className={styles.section}>
       <header className={styles.header}>
         <h1 className={styles.title}>{t('account.title')}</h1>
-        <label className={styles.languageSelector}>
-          <span>{t('account.language')}</span>
-          <select value={i18n.language} onChange={handleLanguageChange} className={styles.select}>
-            <option value="ru">Russian</option>
-            <option value="en">English</option>
-          </select>
-        </label>
       </header>
 
       {!auth.isAuthenticated && (

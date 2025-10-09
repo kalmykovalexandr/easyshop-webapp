@@ -1,4 +1,5 @@
 import { useAuth } from 'react-oidc-context'
+import i18n from '../i18n'
 
 const API_BASE = (import.meta.env.VITE_API_BASE_URL ?? '').replace(/\/$/, '')
 
@@ -39,7 +40,12 @@ function startAuthRedirect(signinRedirect) {
   const targetPath = `${window.location.pathname}${window.location.search}${window.location.hash}`
   window.sessionStorage.setItem('easyshop:returnUrl', targetPath)
 
-  signinRedirect({ state: { returnUrl: targetPath } }).finally(() => {
+  const normalizedLanguage = (i18n.language || 'en').split('-')[0]
+
+  signinRedirect({
+    state: { returnUrl: targetPath },
+    extraQueryParams: { lang: normalizedLanguage, ui_locales: normalizedLanguage }
+  }).finally(() => {
     authRedirectInFlight = false
   })
 }
@@ -74,11 +80,11 @@ export function useApiClient() {
 
     if (response.status === 401) {
       startAuthRedirect(auth.signinRedirect)
-      throw new Error('????????? ???????????')
+      throw new Error('Authentication required')
     }
 
     if (response.status === 403) {
-      throw new Error('???????????? ????')
+      throw new Error('Insufficient permissions')
     }
 
     if (!response.ok) {
@@ -90,3 +96,6 @@ export function useApiClient() {
     return parseResponse(response)
   }
 }
+
+
+
